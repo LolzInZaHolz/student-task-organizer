@@ -1,12 +1,12 @@
 from pathlib import Path
-from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field, field_validator
+from fastapi.staticfiles import StaticFiles
+
+from routers import calendar, courses, tasks, warnings
 
 BASE_DIR = Path(__file__).resolve().parent
-COLOR_PATTERN = r"^#[0-9a-fA-F]{6}$"
 
 app = FastAPI(
     title="Student Task Organizer API",
@@ -14,82 +14,37 @@ app = FastAPI(
     description="Walking skeleton for the student task organizer.",
 )
 
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
-class CourseCreate(BaseModel):
-    """Payload accepted when registering a new course."""
-
-    name: str = Field(max_length=100, examples=["Software Engineering"])
-    code: Optional[str] = Field(default=None, max_length=20, examples=["CS301"])
-    color: Optional[str] = Field(
-        default=None,
-        pattern=COLOR_PATTERN,
-        examples=["#2563EB"],
-        description="Hex colour used to tell courses apart on the calendar.",
-    )
-
-    @field_validator("name")
-    @classmethod
-    def strip_name(cls, value: str) -> str:
-        return value.strip()
-
-    @field_validator("code")
-    @classmethod
-    def normalise_code(cls, value: Optional[str]) -> Optional[str]:
-        if value is None:
-            return None
-        return value.strip() or None
+app.include_router(courses.router)
+app.include_router(tasks.router)
+app.include_router(calendar.router)
+app.include_router(warnings.router)
 
 
-class Course(CourseCreate):
-    id: int
-
-
-# In-memory store for the walking skeleton. Replaced by SQLite in Sprint 2.
-courses_db: List[Course] = []
-
-
-def _next_course_id() -> int:
-    """Return an id that no current course uses."""
-    return max((course.id for course in courses_db), default=0) + 1
+def _page(name: str) -> FileResponse:
+    return FileResponse(BASE_DIR / "static" / f"{name}.html")
 
 
 @app.get("/", include_in_schema=False, response_class=FileResponse)
 def index():
-    """Serve the minimal Sprint 1 UI."""
-    return FileResponse(BASE_DIR / "static" / "index.html")
+    """Course page (Member 1)."""
+    return _page("index")
 
 
-@app.post("/api/courses", response_model=Course, status_code=201)
-def add_course(course: CourseCreate) -> Course:
-    if not course.name:
-        raise HTTPException(status_code=400, detail="Course name cannot be empty")
-    if any(
-        existing.name.casefold() == course.name.casefold()
-        for existing in courses_db
-    ):
-        raise HTTPException(
-            status_code=409,
-            detail="A course with that name already exists",
-        )
-
-    new_course = Course(
-        id=_next_course_id(),
-        name=course.name,
-        code=course.code,
-        color=course.color,
-    )
-    courses_db.append(new_course)
-    return new_course
+@app.get("/tasks", include_in_schema=False, response_class=FileResponse)
+def tasks_page():
+    """Task page (Member 2)."""
+    return _page("tasks")
 
 
-@app.get("/api/courses", response_model=List[Course])
-def get_courses() -> List[Course]:
-    return courses_db
+@app.get("/week", include_in_schema=False, response_class=FileResponse)
+def week_page():
+    """Weekly calendar page (Member 3)."""
+    return _page("week")
 
 
-@app.get("/api/courses/{course_id}", response_model=Course)
-def get_course(course_id: int) -> Course:
-    for course in courses_db:
-        if course.id == course_id:
-            return course
-    raise HTTPException(status_code=404, detail="Course not found")
+@app.get("/warnings", include_in_schema=False, response_class=FileResponse)
+def warnings_page():
+    """Warnings page (Member 4)."""
+    return _page("warnings")
