@@ -3,120 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Student Task Organizer</title>
-  <style>
-    :root {
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --accent: #2563eb;
-      --danger: #b91c1c;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-    }
-
-    main {
-      max-width: 760px;
-      margin: 48px auto;
-      padding: 0 20px;
-    }
-
-    header h1 { margin: 0 0 4px; font-size: 1.7rem; }
-    header p { margin: 0 0 24px; color: var(--muted); }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-
-    form {
-      display: grid;
-      grid-template-columns: 1fr 140px 64px auto;
-      gap: 12px;
-      align-items: end;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      font: inherit;
-    }
-
-    input[type="color"] {
-      width: 100%;
-      height: 42px;
-      padding: 4px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    button {
-      padding: 11px 16px;
-      border: 0;
-      border-radius: 8px;
-      background: var(--accent);
-      color: #fff;
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    button:hover { background: #1d4ed8; }
-
-    h2 { margin: 0 0 12px; font-size: 0.95rem; }
-
-    ul { margin: 0; padding: 0; list-style: none; }
-
-    li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    li:first-child { border-top: 0; }
-
-    .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
-    .name { font-weight: 600; }
-    .meta { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
-    .empty { margin: 8px 0; color: var(--muted); }
-    .error { min-height: 1.2em; margin: 12px 0 0; color: var(--danger); font-size: 0.9rem; }
-
-    @media (max-width: 600px) {
-      form { grid-template-columns: 1fr 1fr; }
-      form button { grid-column: 1 / -1; }
-    }
-  </style>
+  <title>Courses · Student Task Organizer</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <main>
+    <nav>
+      <a href="/" aria-current="page">Courses</a>
+      <a href="/tasks">Tasks</a>
+      <a href="/week">Week</a>
+      <a href="/warnings">Warnings</a>
+    </nav>
+
     <header>
       <h1>Student Task Organizer</h1>
       <p>Sprint 1 walking skeleton &middot; add a course and see it in the list.</p>

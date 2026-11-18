@@ -91,10 +91,24 @@ Members 2, 3 and 4 can build against this now, before the endpoint exists:
 ├── .github/workflows/ci.yml   # lint + test on every push and pull request
 ├── .flake8                    # linter configuration
 ├── .gitignore
-├── main.py                    # FastAPI app and course endpoints
+├── main.py                    # app setup, router wiring, page routes
+├── models.py                  # Pydantic models shared by every feature
+├── store.py                   # in-memory lists (SQLite in Sprint 2)
+├── conftest.py                # shared pytest fixtures
+├── routers/
+│   ├── courses.py             # EPIC-01 - Member 1
+│   ├── tasks.py               # EPIC-02 - Member 2
+│   ├── calendar.py            # EPIC-03 - Member 3
+│   └── warnings.py            # EPIC-04 - Member 4
+├── test_courses.py            # course tests
+├── test_pages.py              # page smoke tests
 ├── requirements.txt           # pinned dependencies (CI uses the same file)
-├── static/index.html          # minimal Sprint 1 UI, no build step
-├── test_main.py               # pytest suite
+├── static/
+│   ├── style.css              # shared styles
+│   ├── index.html             # courses
+│   ├── tasks.html             # tasks (Member 2)
+│   ├── week.html              # week view (Member 3)
+│   └── warnings.html          # warnings (Member 4)
 └── README.md
 ```
 
@@ -114,20 +128,24 @@ Members 2, 3 and 4 can build against this now, before the endpoint exists:
 6. At the end of the sprint, `dev` is merged into `main`.
 
 Branch protection on `main` and `dev` requires the `lint-and-test` check, so a red build
-cannot be merged.
+cannot be merged. The per-member Sprint 1 runbook is in
+[`docs/team-playbook.md`](docs/team-playbook.md).
 
-## Sprint allocation (4 members)
+## Sprint 1 allocation (one story per member)
 
-| Member | Owns    | Sprint 1 (skeleton)               | Sprint 2 (core)                   | Sprint 3 (stretch)     |
-| ------ | ------- | --------------------------------- | --------------------------------- | ---------------------- |
-| 1      | EPIC-01 | Add a course                      | View the course list              | Course colour          |
-| 2      | EPIC-02 | Add an assignment (due + effort)  | Add an exam · edit effort         | —                      |
-| 3      | EPIC-03 | Weekly calendar view              | Weekly total effort               | Import class schedule  |
-| 4      | EPIC-04 | Same-day exam warning             | More than three deadlines / 2 days| Push and email reminders |
+| Member | Story | Branch | Status |
+| ------ | ----- | ------ | ------ |
+| 1 | **1.1** Add a course | `feature/1-1-add-course` | Delivered |
+| 2 | **2.1** Add an assignment with due date and effort | `feature/2-1-add-task` | To do |
+| 3 | **3.1** Weekly calendar view | `feature/3-1-week-view` | To do |
+| 4 | **4.1** Warn when two exams fall on the same day | `feature/4-1-exam-clash` | To do |
 
-The Sprint 1 stories form one end-to-end flow: create a course &rarr; add work under it
-&rarr; see the week &rarr; receive a warning. Each member owns one epic so parallel work
-does not collide.
+One story per member per sprint — nobody owns a whole epic. In Sprint 2 each member
+picks one unstarted story, and stories may move between members.
+
+The four Sprint 1 stories form one end-to-end flow: create a course &rarr; add work under
+it &rarr; see the week &rarr; receive a warning. Each member edits only their own router,
+page and test file, so the branches merge without conflicts.
 
 ## Definition of done
 
@@ -142,5 +160,5 @@ A story is done when:
 
 ## Roadmap
 
-- **Sprint 2:** tasks and exams, week view totals, SQLite persistence, module split.
-- **Sprint 3:** clash and overload warnings, course colour, schedule import, reminders.
+- **Sprint 2:** exams, weekly totals, edit effort, overload warning, SQLite persistence.
+- **Sprint 3:** schedule import, push and email reminders, packaging and deployment.
