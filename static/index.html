@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Task Organizer</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #2563eb;
+      --danger: #b91c1c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      max-width: 760px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    header h1 { margin: 0 0 4px; font-size: 1.7rem; }
+    header p { margin: 0 0 24px; color: var(--muted); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 140px 64px auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 42px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover { background: #1d4ed8; }
+
+    h2 { margin: 0 0 12px; font-size: 0.95rem; }
+
+    ul { margin: 0; padding: 0; list-style: none; }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    li:first-child { border-top: 0; }
+
+    .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+    .name { font-weight: 600; }
+    .meta { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
+    .empty { margin: 8px 0; color: var(--muted); }
+    .error { min-height: 1.2em; margin: 12px 0 0; color: var(--danger); font-size: 0.9rem; }
+
+    @media (max-width: 600px) {
+      form { grid-template-columns: 1fr 1fr; }
+      form button { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Student Task Organizer</h1>
+      <p>Sprint 1 walking skeleton &middot; add a course and see it in the list.</p>
+    </header>
+
+    <section class="card">
+      <h2>Add a course</h2>
+      <form id="course-form">
+        <div>
+          <label for="name">Course name</label>
+          <input id="name" name="name" type="text" placeholder="Software Engineering" maxlength="100" required>
+        </div>
+        <div>
+          <label for="code">Code</label>
+          <input id="code" name="code" type="text" placeholder="CS301" maxlength="20">
+        </div>
+        <div>
+          <label for="color">Colour</label>
+          <input id="color" name="color" type="color" value="#2563eb">
+        </div>
+        <button type="submit">Add</button>
+      </form>
+      <p class="error" id="error" role="alert"></p>
+    </section>
+
+    <section class="card">
+      <h2>My courses (<span id="count">0</span>)</h2>
+      <ul id="course-list"></ul>
+      <p class="empty" id="empty" hidden>No courses yet. Add your first one above.</p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.querySelector("#course-form");
+    const nameInput = document.querySelector("#name");
+    const codeInput = document.querySelector("#code");
+    const colorInput = document.querySelector("#color");
+    const list = document.querySelector("#course-list");
+    const empty = document.querySelector("#empty");
+    const count = document.querySelector("#count");
+    const error = document.querySelector("#error");
+
+    function showError(message) {
+      error.textContent = message;
+    }
+
+    function render(courses) {
+      list.replaceChildren();
+      count.textContent = courses.length;
+      empty.hidden = courses.length > 0;
+
+      for (const course of courses) {
+        const item = document.createElement("li");
+
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = course.color || "#cbd5e1";
+        item.append(dot);
+
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = course.name;
+        item.append(name);
+
+        const meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = [course.code, `#${course.id}`].filter(Boolean).join(" \u00b7 ");
+        item.append(meta);
+
+        list.append(item);
+      }
+    }
+
+    async function loadCourses() {
+      const response = await fetch("/api/courses");
+      if (!response.ok) {
+        showError("Could not load courses.");
+        return;
+      }
+      render(await response.json());
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      showError("");
+
+      const payload = {
+        name: nameInput.value,
+        code: codeInput.value || null,
+        color: colorInput.value,
+      };
+
+      const response = await fetch("/api/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        const detail = body.detail;
+        if (Array.isArray(detail)) {
+          showError(detail.map((entry) => entry.msg).join(" "));
+        } else {
+          showError(detail || "Could not add the course.");
+        }
+        return;
+      }
+
+      form.reset();
+      nameInput.focus();
+      await loadCourses();
+    });
+
+    loadCourses();
+  </script>
+</body>
+</html>
