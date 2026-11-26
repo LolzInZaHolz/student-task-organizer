@@ -12,7 +12,7 @@ column comes from `week5/fees.py` after all seven refactoring steps.
 | Ruff issues (total) | 17 | **0** |
 | Highest cyclomatic complexity | 9 (`calc`) | **4** (`tuition_fee`) |
 | Arguments of the main function | 6 | **5** (3 required, 2 keyword with defaults) |
-| Pylint score (/10) | 4.86 | **10.00** |
+| Pylint score (/10) | 4.86 | 10.00 |
 | Tests passing | 0 — no tests existed for the legacy code | **26** (15 kata + 11 fees) |
 
 Commands used for the "after" column, run from inside `week5/`:

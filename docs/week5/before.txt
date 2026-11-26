@@ -1,14 +1,9 @@
-Ruff and Pylint output BEFORE refactoring
-========================================
-File measured: week5/legacy_fees.py (copied unchanged from the handout)
-Python 3.14.7 | ruff 0.17.6 | pylint 4.1.4
-Captured: 2026-11-26
+Static analysis of legacy_fees.py BEFORE refactoring
 
-Both tools were run from inside the week5 folder, which is where
-pyproject.toml holds the rule selection from Part C, step 2.
+$ ruff --version
+ruff 0.17.6
 
 $ ruff check legacy_fees.py
----------------------------
 F401 [*] `os` imported but unused
  --> legacy_fees.py:1:8
   |
@@ -226,7 +221,6 @@ Found 17 errors.
 [*] 2 fixable with `--fix` (4 unsafe fixes available with `--fix --unsafe-fixes`).
 
 $ ruff check legacy_fees.py --statistics
-----------------------------------------
 6	PLR2004	[ ] magic-value-comparison
 2	F401   	[*] unused-import
 1	C901   	[ ] complex-structure
@@ -241,8 +235,18 @@ $ ruff check legacy_fees.py --statistics
 Found 17 errors.
 [*] 2 fixable with `--fix` (4 unsafe fixes available with `--fix --unsafe-fixes`).
 
-$ pylint legacy_fees.py
------------------------
+$ ruff check legacy_fees.py --select C901 --config lint.mccabe.max-complexity=0 --output-format=concise
+legacy_fees.py:5:5: C901 `calc` is too complex (9 > 0)
+legacy_fees.py:27:5: C901 `report` is too complex (4 > 0)
+legacy_fees.py:38:5: C901 `ProcessAll` is too complex (4 > 0)
+Found 3 errors.
+
+$ python -m pylint --version
+pylint 4.1.4
+astroid 4.3.4
+Python 3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]
+
+$ python -m pylint legacy_fees.py
 ************* Module legacy_fees
 legacy_fees.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 legacy_fees.py:5:0: C0116: Missing function or method docstring (missing-function-docstring)
