@@ -1,8 +1,8 @@
 """Tuition fees for the Student Services App.
 
-Step 5 of the refactoring plan: the mutable default becomes an immutable tuple
-and the remaining truthiness comparisons are cleaned up. Behaviour is unchanged,
-including the known bug in ``process_all``, which is fixed in step 7.
+Step 6 of the refactoring plan: calculation and presentation are separated, so
+``report`` returns the text and the caller decides where it goes. The known bug
+in ``process_all`` is still present and is fixed in step 7.
 """
 
 from dataclasses import dataclass
@@ -52,15 +52,21 @@ def tuition_fee(courses, kind, summer=False, discount=0, extras=()):
     return total
 
 
+# One label per student type, for the same reason as RATES.
+REPORT_LABELS = {
+    StudentType.REGULAR: "Student fee",
+    StudentType.STAFF_CHILD: "Staff child fee",
+    StudentType.SCHOLARSHIP: "Scholarship fee",
+}
+
+
 def report(courses, kind, summer=False, discount=0):
+    """Return the invoice text for one student; printing is the caller's job."""
     fee = tuition_fee(courses, kind, summer, discount)
-    if kind == StudentType.REGULAR:
-        print("Student fee: " + str(fee))
-    elif kind == StudentType.STAFF_CHILD:
-        print("Staff child fee: " + str(fee))
+    lines = [f"{REPORT_LABELS[kind]}: {fee}"]
     if fee > HIGH_FEE_THRESHOLD:
-        print("High fee")
-    return fee
+        lines.append("High fee")
+    return "\n".join(lines)
 
 
 def process_all(students):
