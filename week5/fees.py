@@ -1,8 +1,8 @@
 """Tuition fees for the Student Services App.
 
-Step 1 of the refactoring plan: ``legacy_fees.calc`` moved into its own module
-with the dead code removed. Behaviour is unchanged, including the known bug in
-``process_all``, which is fixed in step 7.
+Step 2 of the refactoring plan: the remaining cryptic names are spelled out.
+Behaviour is unchanged, including the known bug in ``process_all``, which is
+fixed in step 7.
 """
 
 from dataclasses import dataclass
@@ -26,11 +26,11 @@ class StudentType(Enum):
 
 def tuition_fee(courses, kind, summer=False, discount=0, extras=[]):
     total = 0
-    for c in courses:
+    for course in courses:
         if kind == StudentType.REGULAR:
-            total = total + c.hours * 350
+            total = total + course.hours * 350
         elif kind == StudentType.STAFF_CHILD:
-            total = total + c.hours * 350 * 0.5
+            total = total + course.hours * 350 * 0.5
         elif kind == StudentType.SCHOLARSHIP:
             total = total + 0
     if total > 6000:
@@ -39,26 +39,26 @@ def tuition_fee(courses, kind, summer=False, discount=0, extras=[]):
         total = total + 150
     if discount != None:
         total = total - discount
-    for e in extras:
-        total = total + e
+    for extra in extras:
+        total = total + extra
     return total
 
 
 def report(courses, kind, summer=False, discount=0):
-    x = tuition_fee(courses, kind, summer, discount)
+    fee = tuition_fee(courses, kind, summer, discount)
     if kind == StudentType.REGULAR:
-        print("Student fee: " + str(x))
+        print("Student fee: " + str(fee))
     elif kind == StudentType.STAFF_CHILD:
-        print("Staff child fee: " + str(x))
-    if x > 6000:
+        print("Staff child fee: " + str(fee))
+    if fee > 6000:
         print("High fee")
-    return x
+    return fee
 
 
 def process_all(students):
-    for st in students:
-        if st["type"] == StudentType.REGULAR:
-            fee = tuition_fee(st["courses"], st["type"], st["summer"])
-        if st["type"] == StudentType.STAFF_CHILD:
-            fee = tuition_fee(st["courses"], st["type"], st["summer"])
-        print(st["name"], fee)
+    for student in students:
+        if student["type"] == StudentType.REGULAR:
+            fee = tuition_fee(student["courses"], student["type"], student["summer"])
+        if student["type"] == StudentType.STAFF_CHILD:
+            fee = tuition_fee(student["courses"], student["type"], student["summer"])
+        print(student["name"], fee)
