@@ -1,0 +1,17 @@
+$ git log --reverse --format="%h  %ad  %s" --date=format:"%Y-%m-%d %H:%M" main..lab6-tdd-bdd
+dec8a1c  2026-11-26 14:28  chore: keep the lab folders out of the app lint and tests
+7f43783  2026-11-26 14:29  chore(lab6): add project settings
+941a2c0  2026-11-26 14:30  test: rule 1
+fa4ce0d  2026-11-26 14:30  test: rule 2
+9255103  2026-11-26 14:30  test: rule 3
+920e528  2026-11-26 14:30  test: rule 4
+3e29673  2026-11-26 14:30  test: drop of a course that is not registered
+5651a98  2026-11-26 14:30  bdd: describe the registration rules in Gherkin with step definitions
+77202f1  2026-11-26 14:30  bdd: add the drop-course scenario and its step (Task B1)
+83cba40  2026-11-26 14:30  test: pin legacy invoice behaviour with characterization tests
+ac10839  2026-11-26 14:30  refactor: name the invoice magic numbers (move 2)
+237116a  2026-11-26 14:30  refactor: move each fee rule into its own policy class (move 3)
+90fc6df  2026-11-26 14:30  refactor: replace the if/elif chain with a POLICIES lookup (move 4)
+ed70afc  2026-11-26 14:30  refactor: inject the invoice writer (move 5)
+619735d  2026-11-26 14:30  feat: add SiblingPolicy test-first without changing make_invoice (Task C2)
+a476b66  2026-11-26 14:31  docs(lab6): add smells table, coverage answer, team scenarios and run logs
