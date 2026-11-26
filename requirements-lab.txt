@@ -1,0 +1,7 @@
+# Tools used by the coursework folders (week5/ and lab6/).
+# The application itself only needs requirements.txt; CI installs this file in
+# a separate job so the pinned application environment stays untouched.
+behave==1.3.3
+pylint==4.1.4
+pytest-cov==7.1.0
+ruff==0.17.6
