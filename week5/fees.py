@@ -1,8 +1,8 @@
 """Tuition fees for the Student Services App.
 
-Step 6 of the refactoring plan: calculation and presentation are separated, so
-``report`` returns the text and the caller decides where it goes. The known bug
-in ``process_all`` is still present and is fixed in step 7.
+Step 7 of the refactoring plan: the hidden bug is fixed, so every student gets
+a fee - including scholarship students, who used to inherit the previous
+student's fee.
 """
 
 from dataclasses import dataclass
@@ -41,6 +41,7 @@ RATES = {
 
 
 def tuition_fee(courses, kind, summer=False, discount=0, extras=()):
+    """Return the tuition fee for one student's courses."""
     total = sum(RATES[kind] * course.hours for course in courses)
     if total > HIGH_FEE_THRESHOLD:
         total = total - HIGH_FEE_REDUCTION
@@ -70,9 +71,11 @@ def report(courses, kind, summer=False, discount=0):
 
 
 def process_all(students):
+    """Return the fee for every student, keyed by name."""
+    fees = {}
     for student in students:
-        if student["type"] == StudentType.REGULAR:
-            fee = tuition_fee(student["courses"], student["type"], student["summer"])
-        if student["type"] == StudentType.STAFF_CHILD:
-            fee = tuition_fee(student["courses"], student["type"], student["summer"])
-        print(student["name"], fee)
+        kind = StudentType(student["type"])
+        fees[student["name"]] = tuition_fee(
+            student["courses"], kind, student.get("summer", False)
+        )
+    return fees
