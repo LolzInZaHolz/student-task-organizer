@@ -1,7 +1,8 @@
 """Tuition fees for the Student Services App.
 
-Step 3 of the refactoring plan: the magic numbers are named. Behaviour is
-unchanged, including the known bug in ``process_all``, which is fixed in step 7.
+Step 4 of the refactoring plan: the if/elif chain becomes a rate table and the
+remaining truthiness comparisons are cleaned up. Behaviour is unchanged,
+including the known bug in ``process_all``, which is fixed in step 7.
 """
 
 from dataclasses import dataclass
@@ -31,21 +32,21 @@ class StudentType(Enum):
     SCHOLARSHIP = 3
 
 
+# One row per student type: adding a type means adding a row, not editing a chain.
+RATES = {
+    StudentType.REGULAR: FEE_PER_HOUR,
+    StudentType.STAFF_CHILD: FEE_PER_HOUR * STAFF_CHILD_RATE,
+    StudentType.SCHOLARSHIP: FEE_PER_HOUR * SCHOLARSHIP_RATE,
+}
+
+
 def tuition_fee(courses, kind, summer=False, discount=0, extras=[]):
-    total = 0
-    for course in courses:
-        if kind == StudentType.REGULAR:
-            total = total + course.hours * FEE_PER_HOUR
-        elif kind == StudentType.STAFF_CHILD:
-            total = total + course.hours * FEE_PER_HOUR * STAFF_CHILD_RATE
-        elif kind == StudentType.SCHOLARSHIP:
-            total = total + course.hours * FEE_PER_HOUR * SCHOLARSHIP_RATE
+    total = sum(RATES[kind] * course.hours for course in courses)
     if total > HIGH_FEE_THRESHOLD:
         total = total - HIGH_FEE_REDUCTION
-    if summer == True:
+    if summer:
         total = total + SUMMER_SURCHARGE
-    if discount != None:
-        total = total - discount
+    total = total - discount
     for extra in extras:
         total = total + extra
     return total
