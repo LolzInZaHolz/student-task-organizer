@@ -1,0 +1,195 @@
+Lab 6 - output captured while working (red and green runs)
+
+################ Part A and Task A1: registration.py
+
+===== Cycle 1 RED (registration.py does not exist yet) =====
+$ python -m pytest -q
+
+==================================== ERRORS ====================================
+_________________ ERROR collecting tests/test_registration.py __________________
+ImportError while importing test module '/home/claude/lolzinzaholz/student-task-organizer/lab6/tests/test_registration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_registration.py:1: in <module>
+    from registration import Student
+E   ModuleNotFoundError: No module named 'registration'
+=========================== short test summary info ============================
+ERROR tests/test_registration.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.08s
+
+===== Cycle 1 GREEN =====
+$ python -m pytest -q
+.                                                                        [100%]
+1 passed in 0.00s
+
+===== Cycle 2 RED =====
+$ python -m pytest -q
+
+==================================== ERRORS ====================================
+_________________ ERROR collecting tests/test_registration.py __________________
+ImportError while importing test module '/home/claude/lolzinzaholz/student-task-organizer/lab6/tests/test_registration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_registration.py:3: in <module>
+    from registration import RegistrationError, Student
+E   ImportError: cannot import name 'RegistrationError' from 'registration' (/home/claude/lolzinzaholz/student-task-organizer/lab6/registration.py)
+=========================== short test summary info ============================
+ERROR tests/test_registration.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.07s
+
+===== Cycle 2 GREEN =====
+$ python -m pytest -q
+..                                                                       [100%]
+2 passed in 0.01s
+
+===== Cycle 2 REFACTOR (name the limit MAX_HOURS) =====
+$ python -m pytest -q
+..                                                                       [100%]
+2 passed in 0.01s
+
+===== Cycle 3 RED =====
+$ python -m pytest -q
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+____________________ test_cannot_register_same_course_twice ____________________
+
+    def test_cannot_register_same_course_twice():
+        s = Student("2023001")
+        s.register("SET312", 3)
+>       with pytest.raises(RegistrationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RegistrationError
+
+tests/test_registration.py:23: Failed
+=========================== short test summary info ============================
+FAILED tests/test_registration.py::test_cannot_register_same_course_twice - F...
+1 failed, 2 passed in 0.02s
+
+===== Cycle 3 GREEN =====
+$ python -m pytest -q
+...                                                                      [100%]
+3 passed in 0.01s
+
+===== Cycle 4 RED =====
+$ python -m pytest -q
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+___________________________ test_drop_removes_course ___________________________
+
+    def test_drop_removes_course():
+        s = Student("2023001")
+        s.register("SET312", 3)
+>       s.drop("SET312")
+        ^^^^^^
+E       AttributeError: 'Student' object has no attribute 'drop'
+
+tests/test_registration.py:30: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_registration.py::test_drop_removes_course - AttributeError:...
+1 failed, 3 passed in 0.02s
+
+===== Cycle 4 GREEN =====
+$ python -m pytest -q
+....                                                                     [100%]
+4 passed in 0.01s
+
+===== Cycle 5 RED (guard removed on purpose, to show the new test can fail) =====
+$ python -m pytest -q
+....F                                                                    [100%]
+=================================== FAILURES ===================================
+_______________ test_cannot_drop_a_course_that_is_not_registered _______________
+
+    def test_cannot_drop_a_course_that_is_not_registered():
+        s = Student("2023001")
+        s.register("SET312", 3)
+        with pytest.raises(RegistrationError, match="SET472 is not registered"):
+>           s.drop("SET472")
+
+tests/test_registration.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <registration.Student object at 0x7f483eef9220>, code = 'SET472'
+
+    def drop(self, code):
+>       del self.courses[code]
+            ^^^^^^^^^^^^^^^^^^
+E       KeyError: 'SET472'
+
+registration.py:25: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_registration.py::test_cannot_drop_a_course_that_is_not_registered
+1 failed, 4 passed in 0.02s
+
+===== Cycle 5 GREEN (guard restored) =====
+$ python -m pytest -q
+.....                                                                    [100%]
+5 passed in 0.01s
+
+################ Part C and Task C2: invoice.py
+
+===== Characterization tests against the unchanged code =====
+$ python -m pytest -q
+........                                                                 [100%]
+8 passed in 0.02s
+
+===== Move 2: name the magic numbers =====
+$ python -m pytest -q
+........                                                                 [100%]
+8 passed in 0.01s
+
+===== Move 3: one policy class per fee rule =====
+$ python -m pytest -q
+........                                                                 [100%]
+8 passed in 0.02s
+
+===== Move 4: POLICIES lookup =====
+$ python -m pytest -q
+........                                                                 [100%]
+8 passed in 0.02s
+
+===== Move 5: inject the writer =====
+$ python -m pytest -q
+.........                                                                [100%]
+9 passed in 0.02s
+
+===== C2 RED: SiblingPolicy does not exist =====
+$ python -m pytest -q
+....F.....                                                               [100%]
+=================================== FAILURES ===================================
+_______________ test_sibling_gets_25_percent_off_the_regular_fee _______________
+
+student = <registration.Student object at 0x7ff5778e9810>
+
+    def test_sibling_gets_25_percent_off_the_regular_fee(student):
+        fake = FakeWriter()
+>       assert make_invoice(student, "sibling", writer=fake) == 5400
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_invoice_characterization.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+student = <registration.Student object at 0x7ff5778e9810>, kind = 'sibling'
+writer = <test_invoice_characterization.FakeWriter object at 0x7ff5778eead0>
+
+    def make_invoice(student, kind, writer=None):
+>       policy = POLICIES[kind]
+                 ^^^^^^^^^^^^^^
+E       KeyError: 'sibling'
+
+invoice.py:38: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_invoice_characterization.py::test_sibling_gets_25_percent_off_the_regular_fee
+1 failed, 9 passed in 0.03s
+
+===== C2 GREEN =====
+$ python -m pytest -q
+..........                                                               [100%]
+10 passed in 0.02s
