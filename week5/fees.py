@@ -1,7 +1,7 @@
 """Tuition fees for the Student Services App.
 
-Step 4 of the refactoring plan: the if/elif chain becomes a rate table and the
-remaining truthiness comparisons are cleaned up. Behaviour is unchanged,
+Step 5 of the refactoring plan: the mutable default becomes an immutable tuple
+and the remaining truthiness comparisons are cleaned up. Behaviour is unchanged,
 including the known bug in ``process_all``, which is fixed in step 7.
 """
 
@@ -40,7 +40,7 @@ RATES = {
 }
 
 
-def tuition_fee(courses, kind, summer=False, discount=0, extras=[]):
+def tuition_fee(courses, kind, summer=False, discount=0, extras=()):
     total = sum(RATES[kind] * course.hours for course in courses)
     if total > HIGH_FEE_THRESHOLD:
         total = total - HIGH_FEE_REDUCTION
