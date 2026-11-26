@@ -1,3 +1,9 @@
 [flake8]
 exclude = .git,__pycache__,venv,.venv
 max-line-length = 120
+# The lab handouts ship deliberately smelly legacy files. They are frozen
+# evidence for the before/after comparison and must not be "fixed", so they are
+# kept out of the application lint. The refactored versions are linted normally.
+per-file-ignores =
+    week5/legacy_fees.py:ALL
+    lab6/legacy_invoice.py:ALL
