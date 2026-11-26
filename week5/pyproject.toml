@@ -1,0 +1,20 @@
+# Week 5 lab configuration. Run the lab commands from inside this folder:
+#   cd week5
+#   python -m pytest -q
+#   ruff check .
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "N", "SIM", "C90", "PLR", "ARG"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 5
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = ["PLR2004"]
+
+[tool.ruff]
+# legacy_fees.py is the frozen "inherited" code: it is the input to the
+# before/after comparison and must not be cleaned up. Naming it explicitly
+# (ruff check legacy_fees.py) still works, because an explicit path bypasses
+# the exclude list.
+exclude = ["legacy_fees.py"]
