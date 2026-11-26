@@ -4,6 +4,10 @@ from fastapi.testclient import TestClient
 from main import app
 from store import courses_db, tasks_db
 
+# The lab folders are separate exercises with their own settings and tools.
+# Run their tests from inside each folder, not as part of the app test suite.
+collect_ignore = ["week5", "lab6"]
+
 
 @pytest.fixture(autouse=True)
 def clean_databases():
