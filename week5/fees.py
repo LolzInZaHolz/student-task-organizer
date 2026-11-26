@@ -1,12 +1,19 @@
 """Tuition fees for the Student Services App.
 
-Step 2 of the refactoring plan: the remaining cryptic names are spelled out.
-Behaviour is unchanged, including the known bug in ``process_all``, which is
-fixed in step 7.
+Step 3 of the refactoring plan: the magic numbers are named. Behaviour is
+unchanged, including the known bug in ``process_all``, which is fixed in step 7.
 """
 
 from dataclasses import dataclass
 from enum import Enum
+
+FEE_PER_HOUR = 350
+STAFF_CHILD_RATE = 0.5
+SCHOLARSHIP_RATE = 0.0
+
+HIGH_FEE_THRESHOLD = 6000
+HIGH_FEE_REDUCTION = 200
+SUMMER_SURCHARGE = 150
 
 
 @dataclass(frozen=True)
@@ -28,15 +35,15 @@ def tuition_fee(courses, kind, summer=False, discount=0, extras=[]):
     total = 0
     for course in courses:
         if kind == StudentType.REGULAR:
-            total = total + course.hours * 350
+            total = total + course.hours * FEE_PER_HOUR
         elif kind == StudentType.STAFF_CHILD:
-            total = total + course.hours * 350 * 0.5
+            total = total + course.hours * FEE_PER_HOUR * STAFF_CHILD_RATE
         elif kind == StudentType.SCHOLARSHIP:
-            total = total + 0
-    if total > 6000:
-        total = total - 200
+            total = total + course.hours * FEE_PER_HOUR * SCHOLARSHIP_RATE
+    if total > HIGH_FEE_THRESHOLD:
+        total = total - HIGH_FEE_REDUCTION
     if summer == True:
-        total = total + 150
+        total = total + SUMMER_SURCHARGE
     if discount != None:
         total = total - discount
     for extra in extras:
@@ -50,7 +57,7 @@ def report(courses, kind, summer=False, discount=0):
         print("Student fee: " + str(fee))
     elif kind == StudentType.STAFF_CHILD:
         print("Staff child fee: " + str(fee))
-    if fee > 6000:
+    if fee > HIGH_FEE_THRESHOLD:
         print("High fee")
     return fee
 
