@@ -1,5 +1,3 @@
 [flake8]
 exclude = .git,__pycache__,venv,.venv,week5,lab6
 max-line-length = 120
-exclude = .git,__pycache__,venv,.venv,week5/legacy_fees.py,lab6/legacy_invoice.py
-max-line-length = 120
